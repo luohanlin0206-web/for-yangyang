@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>给美杨杨的小天地</title>
+<meta name="description" content="这是一个专门哄美杨杨开心的秘密基地">
+<style>
+:root{
+  --pink-50:#fff5f8; --pink-100:#ffe3ee; --pink-200:#ffc9dd; --pink-300:#ffa8c9;
+  --pink-400:#ff8ab5; --pink-500:#ff6b9d; --pink-600:#f0548a; --pink-700:#d63f76;
+  --deep:#8a2b56; --ink:#5c2540; --gold:#e8b04b;
+  --shadow:0 10px 30px rgba(240,84,138,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC",sans-serif;
+  background:linear-gradient(160deg,#fff5f8 0%,#ffe9f1 35%,#ffdcec 70%,#ffe3ee 100%);
+  color:var(--ink); overflow-x:hidden; min-height:100vh;
+}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1}
+.heart-font{font-family:inherit}
+
+/* ---------- nav ---------- */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  display:flex;justify-content:center;gap:6px;padding:10px 12px;
+  background:rgba(255,245,248,.75);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,138,181,.25);flex-wrap:wrap;
+}
+nav a{
+  text-decoration:none;color:var(--pink-700);font-size:13px;font-weight:600;
+  padding:6px 12px;border-radius:999px;transition:.25s;white-space:nowrap;
+}
+nav a:hover{background:var(--pink-500);color:#fff;transform:translateY(-2px)}
+
+/* ---------- hero ---------- */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:90px 20px 40px;position:relative;
+}
+.hero .badge{
+  background:#fff;color:var(--pink-600);border:1px solid var(--pink-200);
+  padding:6px 18px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:2px;
+  box-shadow:var(--shadow);animation:float 3s ease-in-out infinite;
+}
+.hero h1{
+  font-size:clamp(42px,9vw,84px);color:var(--pink-600);margin:22px 0 6px;letter-spacing:4px;
+  text-shadow:0 4px 20px rgba(255,107,157,.35);
+}
+.hero h1 span{display:inline-block;animation:pop .6s cubic-bezier(.34,1.56,.64,1) both}
+.hero .sub{font-size:clamp(15px,2.6vw,20px);color:var(--deep);margin-bottom:34px}
+.counter{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.counter .cell{
+  background:rgba(255,255,255,.85);border:1px solid var(--pink-200);border-radius:18px;
+  min-width:88px;padding:16px 10px;box-shadow:var(--shadow);animation:float 4s ease-in-out infinite;
+}
+.counter .cell:nth-child(2n){animation-delay:-2s}
+.counter .num{font-size:clamp(28px,5vw,40px);font-weight:800;color:var(--pink-600);font-variant-numeric:tabular-nums}
+.counter .lab{font-size:12px;color:var(--pink-700);margin-top:2px}
+.hero .hint{margin-top:44px;font-size:13px;color:var(--pink-700);opacity:.75;animation:blink 1.8s infinite}
+.hero .big-heart{
+  position:absolute;font-size:150px;opacity:.10;color:var(--pink-500);
+  animation:beat 1.6s ease-in-out infinite;pointer-events:none;user-select:none;
+}
+@keyframes beat{0%,100%{transform:scale(1)}30%{transform:scale(1.12)}60%{transform:scale(.96)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pop{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes blink{0%,100%{opacity:.75}50%{opacity:.25}}
+
+/* ---------- sections ---------- */
+section{padding:80px 20px;max-width:1000px;margin:0 auto}
+.sec-title{text-align:center;margin-bottom:14px}
+.sec-title h2{
+  display:inline-block;font-size:clamp(24px,4.5vw,34px);color:var(--pink-600);
+  background:#fff;padding:10px 34px;border-radius:999px;border:2px dashed var(--pink-300);
+  box-shadow:var(--shadow);
+}
+.sec-title p{text-align:center;color:var(--pink-700);margin-top:12px;font-size:14px}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- timeline ---------- */
+.timeline{position:relative;margin-top:40px;padding-left:30px}
+.timeline::before{
+  content:"";position:absolute;left:8px;top:6px;bottom:6px;width:4px;border-radius:4px;
+  background:linear-gradient(var(--pink-300),var(--pink-500));
+}
+.t-item{position:relative;margin-bottom:34px;background:#fff;border-radius:20px;padding:20px 24px;box-shadow:var(--shadow);transition:.3s}
+.t-item:hover{transform:translateX(8px) rotate(-.5deg)}
+.t-item::before{
+  content:"";position:absolute;left:-31px;top:26px;width:16px;height:16px;border-radius:50%;
+  background:var(--pink-500);border:4px solid #fff;box-shadow:0 0 0 3px var(--pink-300);
+}
+.t-item .date{font-size:12px;color:var(--pink-400);font-weight:700;letter-spacing:1px}
+.t-item h3{color:var(--pink-700);margin:6px 0;font-size:18px}
+.t-item p{font-size:14px;line-height:1.8;color:var(--ink)}
+
+/* ---------- photo wall ---------- */
+.wall{display:flex;flex-wrap:wrap;gap:22px;justify-content:center;margin-top:40px}
+.polaroid{
+  background:#fff;padding:10px 10px 14px;border-radius:8px;width:min(230px,42vw);
+  box-shadow:0 8px 24px rgba(138,43,86,.18);cursor:pointer;transition:.35s;position:relative;
+}
+.polaroid img{width:100%;aspect-ratio:3/3.6;object-fit:cover;border-radius:4px;display:block;background:var(--pink-100)}
+.polaroid:nth-child(2n){transform:rotate(2.5deg)}
+.polaroid:nth-child(2n+1){transform:rotate(-2deg)}
+.polaroid:nth-child(3n){transform:rotate(1deg)}
+.polaroid:hover{transform:rotate(0) scale(1.06);z-index:5;box-shadow:0 16px 40px rgba(138,43,86,.3)}
+.polaroid .cap{text-align:center;font-size:13px;color:var(--pink-700);margin-top:8px;font-family:"Kaiti SC",KaiTi,serif}
+.lightbox{
+  position:fixed;inset:0;background:rgba(60,10,30,.9);z-index:100;display:none;
+  align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(6px);
+}
+.lightbox.open{display:flex}
+.lightbox img{max-width:92vw;max-height:86vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.lightbox .close{
+  position:absolute;top:18px;right:24px;color:#fff;font-size:36px;cursor:pointer;line-height:1;
+}
+
+/* ---------- cards ---------- */
+.deck-zone{text-align:center;margin-top:36px}
+.deck{
+  width:200px;height:290px;margin:0 auto;position:relative;cursor:pointer;
+  transition:transform .4s;
+}
+.deck .card-back{
+  position:absolute;inset:0;border-radius:18px;
+  background:linear-gradient(145deg,var(--pink-500),var(--pink-700));
+  box-shadow:0 14px 34px rgba(214,63,118,.4);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:10px;
+  border:3px solid rgba(255,255,255,.5);
+}
+.deck .card-back .q{font-size:56px;opacity:.9}
+.deck .card-back .t{font-size:15px;letter-spacing:3px;font-weight:700}
+.deck:hover{transform:translateY(-8px) rotate(-2deg)}
+.deck .count{position:absolute;bottom:-34px;left:0;right:0;font-size:13px;color:var(--pink-700)}
+.drawn{
+  display:none;margin:46px auto 0;width:min(320px,84vw);background:#fff;border-radius:20px;
+  padding:30px 24px;box-shadow:var(--shadow);text-align:center;animation:pop .5s cubic-bezier(.34,1.56,.64,1) both;
+  border:3px solid var(--pink-200);
+}
+.drawn.show{display:block}
+.drawn .icon{font-size:48px}
+.drawn h3{color:var(--pink-600);margin:12px 0 8px;font-size:22px}
+.drawn p{font-size:14px;line-height:1.8}
+.drawn .btn-row{margin-top:18px;display:flex;gap:10px;justify-content:center}
+.btn{
+  border:none;border-radius:999px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;transition:.25s;
+}
+.btn-primary{background:var(--pink-500);color:#fff;box-shadow:0 6px 16px rgba(255,107,157,.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(255,107,157,.5)}
+.btn-ghost{background:#fff;color:var(--pink-600);border:2px solid var(--pink-300)}
+.wallet{margin-top:26px;font-size:13px;color:var(--pink-700)}
+.wallet b{color:var(--pink-600)}
+
+/* ---------- fireworks ---------- */
+.fw-zone{text-align:center;margin-top:30px}
+.fw-btn{
+  font-size:17px;font-weight:800;letter-spacing:2px;padding:16px 42px;border-radius:999px;border:none;
+  background:linear-gradient(135deg,var(--pink-400),var(--pink-600));color:#fff;cursor:pointer;
+  box-shadow:0 10px 26px rgba(214,63,118,.45);transition:.3s;
+}
+.fw-btn:hover{transform:scale(1.06)}
+.fw-note{margin-top:16px;font-size:13px;color:var(--pink-700);opacity:.8}
+#fw-canvas{position:fixed;inset:0;z-index:60;pointer-events:none}
+
+/* ---------- singer ---------- */
+.singer-card{
+  margin-top:36px;background:#fff;border-radius:26px;padding:34px 26px;box-shadow:var(--shadow);
+  display:flex;gap:26px;align-items:center;flex-wrap:wrap;justify-content:center;text-align:center;
+}
+.vinyl{
+  width:150px;height:150px;border-radius:50%;flex:none;
+  background:
+    radial-gradient(circle at center,#ff8ab5 0 18%,#3a1020 18.5% 20%,#241018 20.5% 45%,#3a1020 45.5% 47%,#241018 47.5% 72%,#3a1020 72.5% 74%,#181016 74.5% 100%);
+  box-shadow:0 12px 30px rgba(0,0,0,.28);position:relative;animation:spin 6s linear infinite;
+}
+.vinyl::after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:repeating-radial-gradient(circle at center,transparent 0 6px,rgba(255,255,255,.06) 6px 7px)}
+.vinyl .heart{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff}
+@keyframes spin{to{transform:rotate(360deg)}}
+.singer-card .info{max-width:480px}
+.singer-card h3{color:var(--pink-700);font-size:24px;margin-bottom:8px}
+.singer-card p{font-size:14px;line-height:1.9;color:var(--ink)}
+.singer-card .btn-row{margin-top:14px}
+
+/* ---------- food ---------- */
+.food-grid{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:34px}
+.food-item{
+  background:#fff;border-radius:18px;padding:16px 18px;box-shadow:var(--shadow);cursor:pointer;
+  display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink);
+  border:2px solid transparent;transition:.25s;user-select:none;
+}
+.food-item .box{
+  width:22px;height:22px;border-radius:7px;border:2px solid var(--pink-300);flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;transition:.2s;
+}
+.food-item.done{background:linear-gradient(135deg,var(--pink-100),var(--pink-200));border-color:var(--pink-300)}
+.food-item.done .box{background:var(--pink-500);border-color:var(--pink-500)}
+.food-item.done .txt{text-decoration:line-through;opacity:.65}
+.food-progress{margin-top:26px;text-align:center;font-size:14px;color:var(--pink-700)}
+.progress-bar{width:min(420px,80vw);height:12px;background:#fff;border-radius:999px;margin:12px auto 0;overflow:hidden;border:1px solid var(--pink-200)}
+.progress-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink-400),var(--pink-600));border-radius:999px;transition:width .6s cubic-bezier(.34,1.2,.64,1)}
+
+/* ---------- footer ---------- */
+footer{text-align:center;padding:70px 20px 90px;position:relative;z-index:1}
+footer .typed{font-size:clamp(16px,3vw,22px);color:var(--pink-700);min-height:2em;font-family:"Kaiti SC",KaiTi,serif;letter-spacing:1px}
+footer .sign{margin-top:26px;font-size:13px;color:var(--pink-500);letter-spacing:2px}
+.cursor{display:inline-block;width:2px;background:var(--pink-500);animation:blink 1s infinite;margin-left:2px}
+
+@media (max-width:640px){
+  .counter .cell{min-width:70px;padding:12px 8px}
+  section{padding:60px 14px}
+}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<canvas id="fw-canvas"></canvas>
+
+<nav>
+  <a href="#home">首页</a>
+  <a href="#story">我们的故事</a>
+  <a href="#photos">照片墙</a>
+  <a href="#cards">专属卡片</a>
+  <a href="#music">她的歌单</a>
+  <a href="#food">漂亮饭计划</a>
+</nav>
+
+<div class="wrap">
+<!-- ============ HERO ============ -->
+<header class="hero" id="home">
+  <div class="big-heart" style="top:12%;left:6%">❤</div>
+  <div class="big-heart" style="bottom:10%;right:5%;animation-delay:-.8s">❤</div>
+  <div class="badge">⭐ 杨杨专属 · 外人勿入 ⭐</div>
+  <h1 id="title"></h1>
+  <p class="sub">我们已经在一起</p>
+  <div class="counter">
+    <div class="cell"><div class="num" id="d-days">0</div><div class="lab">天</div></div>
+    <div class="cell"><div class="num" id="d-hours">0</div><div class="lab">小时</div></div>
+    <div class="cell"><div class="num" id="d-mins">0</div><div class="lab">分钟</div></div>
+    <div class="cell"><div class="num" id="d-secs">0</div><div class="lab">秒</div></div>
+  </div>
+  <p class="hint">↓ 下滑领取今日份开心 ↓</p>
+</header>
+
+<!-- ============ TIMELINE ============ -->
+<section id="story">
+  <div class="sec-title reveal"><h2>📖 我们的故事</h2><p>从一个查晚自习的晚上开始</p></div>
+  <div class="timeline">
+    <div class="t-item reveal">
+      <div class="date">初遇 · 晚自习</div>
+      <h3>学生会纪检部的那次查勤</h3>
+      <p>本来只是例行公事地看他们班晚自习，谁知道一眼就看到坐在教室里的她。查勤表上的名字我还没记住，但这个人我已经忘不掉了。</p>
+    </div>
+    <div class="t-item reveal">
+      <div class="date">2024.06.02</div>
+      <h3>正式在一起 💕</h3>
+      <p>6 月 2 号，从那以后每天都有人一起吃饭、一起散步、一起分享废话。这一天是我每年最重要的纪念日。</p>
+    </div>
+    <div class="t-item reveal">
+      <div class="date">在一起的每一天</div>
+      <h3>未完待续……</h3>
+      <p>故事还在写，每一页都想和她一起翻。往后还有好多顿漂亮饭、好多场烟花、好多首歌要一起完成。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PHOTOS ============ -->
+<section id="photos">
+  <div class="sec-title reveal"><h2>📷 照片墙</h2><p>每一张都想裱起来</p></div>
+  <div class="wall reveal" id="wall"></div>
+</section>
+
+<!-- ============ CARDS ============ -->
+<section id="cards">
+  <div class="sec-title reveal"><h2>🎴 杨杨专属福利卡</h2><p>每天抽一张，抽到就要兑现哦</p></div>
+  <div class="deck-zone reveal">
+    <div class="deck" id="deck">
+      <div class="card-back"><div class="q">?</div><div class="t">点我抽卡</div></div>
+      <div class="count" id="deck-count"></div>
+    </div>
+    <div class="drawn" id="drawn">
+      <div class="icon" id="drawn-icon">🎁</div>
+      <h3 id="drawn-title"></h3>
+      <p id="drawn-desc"></p>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-claim">收下这张卡</button>
+        <button class="btn btn-ghost" id="btn-redraw">再抽一张</button>
+      </div>
+    </div>
+    <div class="wallet">我的卡包：<b id="wallet-count">0</b> 张 · <span id="wallet-list"></span></div>
+  </div>
+</section>
+
+<!-- ============ FIREWORKS ============ -->
+<section id="fireworks">
+  <div class="sec-title reveal"><h2>🎆 开心烟花</h2><p>点按钮，或者在屏幕任意空白处点一下</p></div>
+  <div class="fw-zone reveal">
+    <button class="fw-btn" id="fw-btn">🎇 给我放烟花</button>
+    <p class="fw-note">烟花是我亲手写的代码，但想让你开心是真的。</p>
+  </div>
+</section>
+
+<!-- ============ SINGER ============ -->
+<section id="music">
+  <div class="sec-title reveal"><h2>🎵 她的歌单</h2><p>杨杨的歌单里住着一位歌手——井迪</p></div>
+  <div class="singer-card reveal">
+    <div class="vinyl"><div class="heart">❤</div></div>
+    <div class="info">
+      <h3>井迪</h3>
+      <p>杨杨最喜欢的歌手。虽然这个网站放不了歌（怕吵到她学习），但唱片可以一直转，就像喜欢她的这份心情，24 小时不停机。</p>
+      <div class="btn-row">
+        <a href="https://y.qq.com/n/ryqq/search?w=%E4%BA%95%E8%BF%AA&t=song" target="_blank" rel="noopener">
+          <button class="btn btn-primary">去 QQ 音乐听井迪 →</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOD ============ -->
+<section id="food">
+  <div class="sec-title reveal"><h2>🍰 漂亮饭打卡计划</h2><p>杨杨爱漂亮饭，那就一顿一顿吃过去</p></div>
+  <div class="food-grid reveal" id="food-grid"></div>
+  <div class="food-progress reveal">
+    已完成 <b id="food-done">0</b> / <span id="food-total">0</span> 顿漂亮饭
+    <div class="progress-bar"><i id="food-bar"></i></div>
+  </div>
+</section>
+
+<footer>
+  <p class="typed"><span id="typed"></span><span class="cursor">&nbsp;</span></p>
+  <p class="sign">Made with ❤ by 罗汉林 · 只给美杨杨一个人看</p>
+</footer>
+</div>
+
+<div class="lightbox" id="lightbox"><span class="close" id="lb-close">&times;</span><img id="lb-img" alt=""></div>
+
+<script>
+/* ================= 基础数据 ================= */
+const START = new Date("2024-06-02T00:00:00+08:00");
+const HER = "美杨杨";
+
+/* ================= 标题打字 ================= */
+(function(){
+  const t = document.getElementById("title");
+  [...("给" + HER + "的小天地")].forEach((ch,i)=>{
+    const s = document.createElement("span");
+    s.textContent = ch;
+    s.style.animationDelay = (i*0.09)+"s";
+    t.appendChild(s);
+  });
+})();
+
+/* ================= 在一起计时 ================= */
+(function(){
+  const el = {d:document.getElementById("d-days"),h:document.getElementById("d-hours"),
+              m:document.getElementById("d-mins"),s:document.getElementById("d-secs")};
+  function pad(n){return String(n).padStart(2,"0")}
+  function tick(){
+    let diff = Math.max(0, Date.now() - START.getTime());
+    const d = Math.floor(diff/86400000); diff -= d*86400000;
+    const h = Math.floor(diff/3600000);  diff -= h*3600000;
+    const m = Math.floor(diff/60000);    diff -= m*60000;
+    const s = Math.floor(diff/1000);
+    el.d.textContent = d; el.h.textContent = pad(h);
+    el.m.textContent = pad(m); el.s.textContent = pad(s);
+  }
+  tick(); setInterval(tick, 1000);
+})();
+
+/* ================= 照片墙 ================= */
+(function(){
+  const caps = {
+    couple_01:"第一次一起出去玩", couple_02:"她说这张要裱起来",
+    couple_03:"晚自习后遗症：见面就想笑", couple_04:"同款外套 get ✔",
+    couple_05:"比耶永远不过时", couple_06:"抓拍成功的一张",
+    couple_07:"她说要减肥，我说不行", couple_08:"阳光很好，她更好",
+    couple_09:"日常一贴贴", couple_10:"这张我设为屏保了",
+    solo_01:"杨杨单人照 · 仙女本仙", solo_02:"仙女二号机位",
+    solo_03:"白裙子杀我", solo_04:"漂亮饭先吃，我先拍"
+  };
+  const wall = document.getElementById("wall");
+  const names = Object.keys(caps);
+  // 洗牌，每次打开照片墙顺序都不一样
+  names.sort(()=>Math.random()-0.5);
+  names.forEach(n=>{
+    const div = document.createElement("div");
+    div.className = "polaroid";
+    div.innerHTML = `<img src="photos/${n}.jpg" loading="lazy" alt="${caps[n]}"><div class="cap">${caps[n]}</div>`;
+    div.onclick = ()=>{ document.getElementById("lb-img").src = `photos/${n}.jpg`;
+      document.getElementById("lightbox").classList.add("open"); };
+    wall.appendChild(div);
+  });
+  const lb = document.getElementById("lightbox");
+  document.getElementById("lb-close").onclick = ()=>lb.classList.remove("open");
+  lb.onclick = e=>{ if(e.target===lb) lb.classList.remove("open"); };
+})();
+
+/* ================= 抽卡片 ================= */
+(function(){
+  const cards = [
+    {icon:"🧋", title:"奶茶券", desc:"任意口味任意店，本券兑换奶茶一杯，即刻生效，永不过期。"},
+    {icon:"💆", title:"按摩券", desc:"肩颈按摩十分钟，力度自选，附赠一句『辛苦了宝贝』。"},
+    {icon:"😤", title:"免生气券", desc:"凭此券，罗汉林本次不顶嘴、不找借口、立刻认错，并附带一个抱抱。"},
+    {icon:"🍱", title:"漂亮饭券", desc:"下一顿漂亮饭我请，她点菜我买单，全程负责拍照修图。"},
+    {icon:"🚗", title:"出游券", desc:"周末出游一次，目的地她定，我负责查攻略、拎包和拍好看的照片。"},
+    {icon:"📞", title:"随叫随到券", desc:"任何时间任何地点，一条消息，十分钟内出现（异地时以视频代替）。"},
+    {icon:"🤗", title:"拥抱充电券", desc:"电量低于 50% 时有效，抱抱时长由她说了算，上不封顶。"},
+    {icon:"🌟", title:"万能愿望券", desc:"内容她填，无论写什么都兑现。此卡为终极大奖，抽中率感人。"}
+  ];
+  const deck = document.getElementById("deck");
+  const drawn = document.getElementById("drawn");
+  const dIcon = document.getElementById("drawn-icon"),
+        dTitle = document.getElementById("drawn-title"),
+        dDesc = document.getElementById("drawn-desc");
+  const wCount = document.getElementById("wallet-count"),
+        wList = document.getElementById("wallet-list"),
+        dCount = document.getElementById("deck-count");
+  let wallet = [];
+  try{ wallet = JSON.parse(localStorage.getItem("yy_wallet")||"[]"); }catch(e){}
+  function refreshWallet(){
+    wCount.textContent = wallet.length;
+    wList.textContent = wallet.length ? wallet.join("、") : "空空如也，快去抽卡";
+  }
+  refreshWallet();
+
+  let todayCount = +(localStorage.getItem("yy_today")||"0");
+  const today = new Date().toDateString();
+  if (localStorage.getItem("yy_day") !== today){ todayCount = 0; localStorage.setItem("yy_day", today); }
+  function refreshCount(){ dCount.textContent = todayCount>=3 ? "今日次数已用完，明天再来～" : `今日剩余 ${3-todayCount} 次机会`; }
+  refreshCount();
+
+  let current = null;
+  function draw(){
+    if (todayCount >= 3){ dCount.textContent = "今日次数已用完，明天再来～"; return; }
+    todayCount++; localStorage.setItem("yy_today", todayCount);
+    refreshCount();
+    deck.style.transform = "rotateY(360deg)";
+    setTimeout(()=>deck.style.transform="", 450);
+    current = cards[Math.floor(Math.random()*cards.length)];
+    dIcon.textContent = current.icon;
+    dTitle.textContent = current.title;
+    dDesc.textContent = current.desc;
+    drawn.classList.remove("show"); void drawn.offsetWidth;
+    drawn.classList.add("show");
+  }
+  deck.onclick = draw;
+  document.getElementById("btn-redraw").onclick = draw;
+  document.getElementById("btn-claim").onclick = ()=>{
+    if (current && !wallet.includes(current.title)){
+      wallet.push(current.title);
+      localStorage.setItem("yy_wallet", JSON.stringify(wallet));
+      refreshWallet();
+    }
+    drawn.classList.remove("show");
+  };
+})();
+
+/* ================= 爱心烟花 ================= */
+(function(){
+  const cv = document.getElementById("fw-canvas"), ctx = cv.getContext("2d");
+  function resize(){ cv.width = innerWidth; cv.height = innerHeight; }
+  resize(); addEventListener("resize", resize);
+  const colors = ["#ff6b9d","#ff8ab5","#ffa8c9","#ffd166","#fff0f5","#f0548a"];
+  let parts = [];
+  function heartPoints(x,y,scale){
+    // 参数方程爱心
+    const pts=[];
+    for(let i=0;i<40;i++){
+      const t = Math.PI*2*i/40;
+      const hx = 16*Math.pow(Math.sin(t),3);
+      const hy = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+      pts.push({x:x+hx*scale, y:y+hy*scale});
+    }
+    return pts;
+  }
+  function burst(x,y,big){
+    const n = big? 70 : 26;
+    for(let i=0;i<n;i++){
+      const a = Math.random()*Math.PI*2, sp = (big?6:3.5)*(0.4+Math.random()*0.8);
+      parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.5,life:1,
+        decay:0.012+Math.random()*0.014,color:colors[Math.floor(Math.random()*colors.length)],
+        size:2+Math.random()*3, heart:Math.random()<0.35, scale:0.12+Math.random()*0.18});
+    }
+  }
+  document.getElementById("fw-btn").onclick = ()=>{
+    for(let i=0;i<5;i++)
+      setTimeout(()=>burst(innerWidth*(0.15+Math.random()*0.7), innerHeight*(0.15+Math.random()*0.45), true), i*260);
+  };
+  document.addEventListener("click", e=>{
+    if (e.target.closest("button,a,nav,.polaroid,.lightbox,.deck,.food-item,input")) return;
+    burst(e.clientX, e.clientY, false);
+  });
+  (function loop(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    parts = parts.filter(p=>p.life>0);
+    for(const p of parts){
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.06; p.vx*=0.985; p.life-=p.decay;
+      ctx.globalAlpha = Math.max(0,p.life);
+      ctx.fillStyle = p.color;
+      if(p.heart){
+        const pts = heartPoints(p.x,p.y,p.scale);
+        ctx.beginPath();
+        pts.forEach((q,i)=> i? ctx.lineTo(q.x,q.y): ctx.moveTo(q.x,q.y));
+        ctx.closePath(); ctx.fill();
+      } else {
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.size*p.life,0,7); ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* ================= 漂亮饭计划 ================= */
+(function(){
+  const items = ["粉色甜品","火锅","烤肉","寿司","奶茶+蛋糕","brunch","烤串","日料","螺蛳粉","冰淇淋"];
+  const KEY = "yy_food";
+  let done = new Set();
+  try{ done = new Set(JSON.parse(localStorage.getItem(KEY)||"[]")); }catch(e){}
+  const grid = document.getElementById("food-grid");
+  items.forEach(name=>{
+    const el = document.createElement("div");
+    el.className = "food-item" + (done.has(name)?" done":"");
+    el.innerHTML = `<span class="box">${done.has(name)?"✔":""}</span><span class="txt">${name}</span>`;
+    el.onclick = ()=>{
+      done.has(name) ? done.delete(name) : done.add(name);
+      localStorage.setItem(KEY, JSON.stringify([...done]));
+      el.classList.toggle("done");
+      el.querySelector(".box").textContent = done.has(name)?"✔":"";
+      refresh();
+    };
+    grid.appendChild(el);
+  });
+  const doneEl = document.getElementById("food-done"),
+        totalEl = document.getElementById("food-total"),
+        bar = document.getElementById("food-bar");
+  function refresh(){
+    doneEl.textContent = done.size;
+    totalEl.textContent = items.length;
+    bar.style.width = (done.size/items.length*100)+"%";
+  }
+  refresh();
+})();
+
+/* ================= 背景漂浮爱心 ================= */
+(function(){
+  const cv = document.getElementById("bg-canvas"), ctx = cv.getContext("2d");
+  function resize(){ cv.width = innerWidth; cv.height = innerHeight; }
+  resize(); addEventListener("resize", resize);
+  const hearts = [];
+  for(let i=0;i<26;i++){
+    hearts.push({x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+      s:6+Math.random()*16, vy:0.2+Math.random()*0.6, vx:(Math.random()-.5)*0.3,
+      a:0.05+Math.random()*0.12, ph:Math.random()*7});
+  }
+  (function loop(t){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    for(const h of hearts){
+      h.y -= h.vy; h.x += h.vx + Math.sin(t/1400+h.ph)*0.3;
+      if(h.y < -30){ h.y = cv.height+30; h.x = Math.random()*cv.width; }
+      ctx.globalAlpha = h.a * (0.7+0.3*Math.sin(t/900+h.ph));
+      ctx.font = h.s+"px serif";
+      ctx.fillStyle = "#f0548a";
+      ctx.fillText("❤", h.x, h.y);
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(loop);
+  })(0);
+})();
+
+/* ================= 滚动显现 + 页脚打字 ================= */
+(function(){
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, {threshold:0.15});
+  document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+  const lines = [
+    "杨杨，今天是想让你开心才做的这个网站。",
+    "查晚自习那次，是我大学生涯最值的一次出勤。",
+    "往后的漂亮饭我都包了，井迪的歌我陪你听，烟花随时放。",
+    "一句话总结：喜欢你，越来越喜欢。"
+  ];
+  const typed = document.getElementById("typed");
+  let li=0, ci=0;
+  (function type(){
+    if(li>=lines.length) return;
+    if(ci<=lines[li].length){
+      typed.textContent = lines.slice(0,li).join("") + lines[li].slice(0,ci);
+      ci++; setTimeout(type, 65);
+    } else { li++; ci=0; setTimeout(type, 700); }
+  })();
+})();
+</script>
+</body>
+</html>
